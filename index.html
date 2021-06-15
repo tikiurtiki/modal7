@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta
+      id="viewport"
+      name="viewport"
+      content="width=device-width, minimum-scale=1, maximum-scale=1"
+    />
+    <meta charset="UTF-8" />
+    <title>ブラウザバックでポップアップ表示サンプル</title>
+    <!-- anonymousCDN -->
+    <link href="fontawesome/css/all.css" rel="stylesheet" />
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="<>"
+      crossorigin="anonymous"
+    ></script>
+    <!-- /anonymousCDN -->
+    <style>
+      /* ポップアップ */
+      .popup-area {
+        display: none;
+        width: 80vw;
+        background: #fff;
+        padding: 20px;
+        position: fixed;
+        z-index: 9999;
+        top: 50%;
+        left: 50%;
+        transform: translateY(-50%) translateX(-50%);
+        text-align: center;
+        border-radius: 8px;
+        box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.4);
+			}
+			.popup-area img{
+				width: 100%;
+      }
+      @media screen and (min-width: 980px) {
+        .popup-area {
+          width: auto;
+          max-width: 460px;
+        }
+      }
+      .popup-area button {
+        margin: 30px auto 0;
+      }
+      .popup-area .icon {
+        font-size: 3em;
+        color: red;
+      }
+      /* 背景色 */
+      .cover-eml {
+        background: rgba(0, 0, 0, 0.3);
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        z-index: 999;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <a href="index2.html">まずはこちらをクリック！</a>
+
+    <!-- ポップアップ -->
+    <div class="popup-area">
+      <i class="fas fa-exclamation-triangle icon"></i>
+			<img src="img/ウユニ.jpg" alt="">
+      <button class="close-btn">閉じる</button>
+    </div>
+
+    <script>
+      "use strict";
+      //ポップアップ非表示の判定
+      let popAppend = false;
+
+      //履歴の追加
+      let hash = location.hash;
+      if (hash != "#back") {
+        history.pushState(null, null, location.href);
+        history.replaceState(null, null, "#back");
+      }
+
+      //設定したハッシュタグが消えたら実行
+      window.addEventListener("popstate", (e) => {
+        if (location.hash != "#back" && popAppend === false) {
+          $(".popup-area").fadeIn();
+          $("body").append($("<div>", { class: "cover-eml" }));
+          popAppend = true;
+
+          if (popAppend) {
+            $("body").on("click", ".cover-eml", function () {
+              deleteElm();
+              popAppend = false;
+            });
+          }
+        }
+      });
+
+      //バナー削除
+      $("body,.close-btn").on("click", ".close-btn", function () {
+        deleteElm();
+        popAppend = false;
+      });
+      function deleteElm() {
+        $(".cover-eml").fadeOut();
+        $(".cover-eml").remove();
+        $(".popup-area").fadeOut();
+      }
+    </script>
+  </body>
+</html>
